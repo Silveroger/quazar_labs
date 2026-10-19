@@ -1,4 +1,4 @@
-CREATE TABLE `assets` (
+CREATE TABLE IF NOT EXISTS `assets` (
 	`id` text PRIMARY KEY NOT NULL,
 	`object_key` text NOT NULL,
 	`name` text NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE `assets` (
 	`created_at` text NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE `content` (
+CREATE TABLE IF NOT EXISTS `content` (
 	`id` integer PRIMARY KEY NOT NULL,
 	`document` text NOT NULL,
 	`revision` integer NOT NULL,

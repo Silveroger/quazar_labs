@@ -6,7 +6,7 @@ import {
   Presentation,
   Plus,
 } from "lucide-react";
-import Link from "next/link";
+import Link from "@/components/link";
 import HeroLab from "@/components/hero-lab";
 import {
   ButtonLink,

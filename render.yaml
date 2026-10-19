@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: quazar-labs
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build:render
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22.14.0
+      - key: ADMIN_USER_IDS
+        value: local_seedy
+      - key: SITE_URL
+        sync: false

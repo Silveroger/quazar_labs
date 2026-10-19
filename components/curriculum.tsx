@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/link";
 import { ArrowUpRight, ChevronDown, CirclePlay, Clock3 } from "lucide-react";
 import { type Course, lessonPath, publishedLessons } from "@/lib/content";
 import { moduleIcons } from "./site";
@@ -79,6 +79,17 @@ export default function Curriculum({
           Start learning
           <ArrowUpRight size={18} />
         </Link>
+      ) : track.modules[0]?.lessons[0] ? (
+        <Link
+          className="button start-learning"
+          href={
+            lessonPath(course, track, track.modules[0].lessons[0]) +
+            (preview ? "?preview=1" : "")
+          }
+        >
+          Preview lesson 01
+          <ArrowUpRight size={18} />
+        </Link>
       ) : (
         <div className="upcoming-notice">
           <Clock3 size={20} />
@@ -132,14 +143,14 @@ export default function Curriculum({
                           : ready
                             ? "Watch lesson"
                             : "Coming soon"}
-                        {ready && <ArrowUpRight size={15} />}
+                        <ArrowUpRight size={15} style={{ opacity: ready ? 1 : 0.6 }} />
                       </span>
                     </>
                   );
-                  return ready || preview ? (
+                  return (
                     <Link
                       key={l.id}
-                      className="lesson-row"
+                      className={`lesson-row ${ready ? "" : "upcoming"}`}
                       href={
                         lessonPath(course, track, l) +
                         (preview ? "?preview=1" : "")
@@ -147,10 +158,6 @@ export default function Curriculum({
                     >
                       {content}
                     </Link>
-                  ) : (
-                    <div key={l.id} className="lesson-row upcoming">
-                      {content}
-                    </div>
                   );
                 })}
               </div>
