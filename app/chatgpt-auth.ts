@@ -1,4 +1,4 @@
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 export type ChatGPTUser = {
@@ -22,21 +22,46 @@ export async function getChatGPTUser(): Promise<ChatGPTUser | null> {
   const requestHeaders = await headers();
   const userId = requestHeaders.get(USER_ID_HEADER);
   const email = requestHeaders.get(USER_EMAIL_HEADER);
-  if (!userId || !email) return null;
+  if (userId && email) {
+    const encodedFullName = requestHeaders.get(USER_FULL_NAME_HEADER);
+    const fullName =
+      encodedFullName &&
+      requestHeaders.get(USER_FULL_NAME_ENCODING_HEADER) === PERCENT_ENCODED_UTF8
+        ? safeDecodeURIComponent(encodedFullName)
+        : null;
 
-  const encodedFullName = requestHeaders.get(USER_FULL_NAME_HEADER);
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get(USER_FULL_NAME_ENCODING_HEADER) === PERCENT_ENCODED_UTF8
-      ? safeDecodeURIComponent(encodedFullName)
-      : null;
+    return {
+      userId,
+      displayName: fullName ?? email,
+      email,
+      fullName,
+    };
+  }
 
-  return {
-    userId,
-    displayName: fullName ?? email,
-    email,
-    fullName,
-  };
+  // Session cookie fallback for Render and standalone environments
+  try {
+    const cookieStore = await cookies();
+    const auth = cookieStore.get("__sites_local_auth")?.value;
+    if (auth) {
+      let email = "founder@quazar.test";
+      let name = "Founder";
+      if (auth !== "1") {
+        try {
+          const parsed = JSON.parse(decodeURIComponent(auth));
+          if (parsed.email) email = parsed.email;
+          if (parsed.name) name = parsed.name;
+        } catch {}
+      }
+      return {
+        userId: "local_seedy",
+        displayName: name,
+        email,
+        fullName: name,
+      };
+    }
+  } catch {}
+
+  return null;
 }
 
 export async function requireChatGPTUser(

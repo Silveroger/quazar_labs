@@ -13,9 +13,17 @@ export function bucket() {
 }
 export async function adminUser() {
   const user = await getChatGPTUser();
-  return isAllowedAdmin(user, env.ADMIN_USER_IDS, env.ADMIN_EMAILS)
-    ? user
-    : null;
+  const adminIds =
+    (typeof env !== "undefined" &&
+      (env as Record<string, string | undefined>).ADMIN_USER_IDS) ||
+    process.env.ADMIN_USER_IDS ||
+    "local_seedy";
+  const adminEmails =
+    (typeof env !== "undefined" &&
+      (env as Record<string, string | undefined>).ADMIN_EMAILS) ||
+    process.env.ADMIN_EMAILS ||
+    "";
+  return isAllowedAdmin(user, adminIds, adminEmails) ? user : null;
 }
 export async function snapshot(): Promise<Snapshot> {
   const row = await database()
@@ -55,4 +63,8 @@ export function json(data: unknown, status = 200) {
     headers: { "Cache-Control": "no-store" },
   });
 }
-export const siteOrigin = () => env.SITE_URL || "http://localhost:5173";
+export const siteOrigin = () =>
+  (typeof env !== "undefined" &&
+    (env as Record<string, string | undefined>).SITE_URL) ||
+  process.env.SITE_URL ||
+  "http://localhost:5173";

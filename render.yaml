@@ -10,5 +10,7 @@ services:
         value: 22.14.0
       - key: ADMIN_USER_IDS
         value: local_seedy
+      - key: ADMIN_PASSWORD
+        sync: false
       - key: SITE_URL
         sync: false

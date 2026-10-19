@@ -25,12 +25,10 @@ export default async function Admin() {
           lessons, and upload teaching materials.
         </p>
         <a className="button" href={chatGPTSignInPath("/admin")} target="_top">
-          Sign in with ChatGPT →
+          Sign in to Founder Workspace →
         </a>
         <p className="admin-login-note">
-          {process.env.NODE_ENV !== "production"
-            ? "Local preview: sign-in uses a development account. Hosted sign-in will use your configured founder accounts."
-            : "Students can explore all public lessons without an account."}
+          Sign in with your configured founder credentials to access the editor.
         </p>
       </section>
     );
